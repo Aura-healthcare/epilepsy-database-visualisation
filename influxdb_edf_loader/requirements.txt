@@ -1,0 +1,5 @@
+influxdb-client==1.14.0
+numpy==1.19.5
+pandas==1.1.5
+pyEDFlib==0.1.20
+tqdm==4.56.2
