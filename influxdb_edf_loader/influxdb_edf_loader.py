@@ -5,10 +5,15 @@ from influxdb_client import InfluxDBClient, Point
 from pyedflib import highlevel
 from pyedflib import edfreader
 from optparse import OptionParser
+from typing import List
 import re
 
 
 class InfluxdbLoader:
+
+    # The purpose of this class is to prepare and use parameters to read an 
+    # edf file, then for a channel prepare and send the ECG data in InfluxDB
+    # by batch
 
     def __init__(self,
                  edf_file: str,
@@ -45,8 +50,11 @@ class InfluxdbLoader:
         self.write_client = self.client.write_api()
         self.batch_size = batch_size
 
-    def load_edf(self,
-                 channel_name: str) -> pd.DataFrame:
+    def convert_edf_to_dataframe (self,
+                                  channel_name: str) -> pd.DataFrame:
+
+        # From its path, load an edf file for a selected channel and
+        # adapt it in DataFrame
 
         self.fs = self.headers[
             'SignalHeaders'][
@@ -54,21 +62,20 @@ class InfluxdbLoader:
         with edfreader.EdfReader(self.edf_file) as f:
             signals = f.readSignal(self.channels.index(channel_name))
 
+        freq_ns = int(1/self.fs*1_000_000_000)
         df = pd.DataFrame(signals,
                           columns=['signal'],
                           index=pd.date_range(self.startdate,
                                               periods=len(signals),
-                                              freq='{}ns'.format(
-                                                  int(1/self.fs*1_000_000_000))
+                                              freq=f'{freq_ns}ns'
                                               ))
         return df
-
 
 
     def prepare_batch(self,
                      ecg_array: np.ndarray,
                      timestamps_array: pd.Timestamp,
-                     channel_name: str) -> Point:
+                     channel_name: str) -> List[Point]:
 
         # Prepare a batch of data to be sent in InfluxDB with proper format
 
@@ -89,11 +96,13 @@ class InfluxdbLoader:
 
         # For a channel, prepare the data by batch and sent it to InfluxDB
 
-        df_ecg = self.load_edf(channel_name=channel_name)
+        df_ecg = self.convert_edf_to_dataframe(channel_name=channel_name)
 
-        for i in tqdm(range(0, df_ecg.shape[0], self.batch_size)):
-            ecg_array = df_ecg['signal'].iloc[i:i+self.batch_size].values
-            timestamps_array = df_ecg.index[i:i+self.batch_size]
+        for batch_iteration in tqdm(range(0, df_ecg.shape[0], self.batch_size)):
+            ecg_array = df_ecg['signal'].iloc[
+                batch_iteration:batch_iteration+self.batch_size].values
+            timestamps_array = df_ecg.index[
+                batch_iteration:batch_iteration+self.batch_size]
             point_list = self.prepare_batch(
                 ecg_array=ecg_array,
                 timestamps_array=timestamps_array,
