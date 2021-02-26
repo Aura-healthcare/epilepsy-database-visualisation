@@ -63,10 +63,14 @@ class InfluxdbLoader:
                                               ))
         return df
 
-    def prepare_point(self,
-                      ecg_array: np.ndarray,
-                      timestamps_array: pd.Timestamp,
-                      channel_name: str) -> Point:
+
+
+    def prepare_batch(self,
+                     ecg_array: np.ndarray,
+                     timestamps_array: pd.Timestamp,
+                     channel_name: str) -> Point:
+
+        # Prepare a batch of data to be sent in InfluxDB with proper format
 
         point_list = [Point("ecg_signal").
                       tag("patient", self.patient_name).
@@ -81,14 +85,16 @@ class InfluxdbLoader:
 
         return point_list
 
-    def load_points(self, channel_name: str):
+    def load_data(self, channel_name: str):
+
+        # For a channel, prepare the data by batch and sent it to InfluxDB
 
         df_ecg = self.load_edf(channel_name=channel_name)
 
         for i in tqdm(range(0, df_ecg.shape[0], self.batch_size)):
             ecg_array = df_ecg['signal'].iloc[i:i+self.batch_size].values
             timestamps_array = df_ecg.index[i:i+self.batch_size]
-            point_list = self.prepare_point(
+            point_list = self.prepare_batch(
                 ecg_array=ecg_array,
                 timestamps_array=timestamps_array,
                 channel_name=channel_name)
@@ -115,4 +121,4 @@ if __name__ == '__main__':
                             version=options.version,
                             token=options.token)
 
-    loader.load_points(options.channel)
+    loader.load_data(options.channel)
