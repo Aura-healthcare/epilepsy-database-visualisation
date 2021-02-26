@@ -8,7 +8,7 @@ from optparse import OptionParser
 import re
 
 
-class influxdb_loader:
+class InfluxdbLoader:
 
     def __init__(self,
                  edf_file: str,
@@ -111,8 +111,8 @@ if __name__ == '__main__':
 
     (options, args) = parser.parse_args()
 
-    loader = influxdb_loader(edf_file=options.input_file,
-                             version=options.version,
-                             token=options.token)
+    loader = InfluxdbLoader(edf_file=options.input_file,
+                            version=options.version,
+                            token=options.token)
 
     loader.load_points(options.channel)
