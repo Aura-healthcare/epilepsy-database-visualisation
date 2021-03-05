@@ -1,0 +1,33 @@
+# TODO: add influxDB + mySQL Datasources
+# apiVersion: 1
+
+# deleteDatasources:
+#   - name: PostgreSQL
+#     orgId: 1
+#   - name: Grafana
+#     orgId: 1
+# datasources:
+#   - name: MySQL
+#     orgId: 1
+#     type: postgres
+#     url: ${PG_SERVER_URL}:${PG_PORT}
+#     database: ${PG_DBNAME}
+#     user: ${PG_USER}@${PG_SERVER}
+#     secureJsonData:
+#       password: ${PG_PASSWORD}
+#     jsonData:
+#       sslmode: "require"
+#       postgresVersion: 1100
+#       timescaledb: true
+#   - name: InfluxDB
+#     orgId: 1
+#     type: postgres
+#     url: ${PG_SERVER_GF_URL}:${PG_PORT_GF}
+#     database: ${PG_DBNAME_GF}
+#     user: ${PG_USER_GF}@${PG_SERVER_GF}
+#     secureJsonData:
+#       password: ${PG_PASSWORD_GF}
+#     jsonData:
+#       sslmode: "require"
+#       postgresVersion: 1100
+#       timescaledb: false
