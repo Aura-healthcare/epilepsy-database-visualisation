@@ -26,25 +26,28 @@ class InfluxdbLoader:
 
         self.headers = highlevel.read_edf_header(self.edf_file)
         self.channels = self.headers['channels']
+        print(self.channels)
 
-        file_pattern = self.edf_file[re.search('PAT_*', edf_file).start():]
-        self.patient_name = file_pattern[:re.search('/', file_pattern).start()]
-        edf_file_name = file_pattern[re.search('/', file_pattern).start()+1:]
-        self.segment = edf_file_name[-5:][0]
-        self.record = edf_file_name[-9:][:2]
+        # file_pattern = self.edf_file[re.search('PAT_*', edf_file).start():]
+        # self.patient_name = file_pattern[:re.search('/', file_pattern).start()]
+        # edf_file_name = file_pattern[re.search('/', file_pattern).start()+1:]
+        # self.segment = edf_file_name[-5:][0]
+        # self.record = edf_file_name[-9:][:2]
+
+        self.patient_name = '0002'
+        self.segment = 1
+        self.record = 1
 
         self.startdate = pd.to_datetime(
             self.headers['startdate'])
         # For French hour, UTC+1 (no summer date) and
-        # months currently start at 0
-        self.startdate = self.startdate.replace(
-            month=self.startdate.month + 1) + pd.Timedelta(hours=1)
+        self.startdate = self.startdate + pd.Timedelta(hours=1)
 
         # InfluxDB API
-        self.base = 'ecg_lateppe'
+        self.base = 'ecg_hackathon_test'
         self.token = token
-        self.org = "datasciences"
-        self.bucket = "ecg_classif"
+        self.org = "Aura"
+        self.bucket = "hackathon"
         self.client = InfluxDBClient(url="http://localhost:8086",
                                      token=self.token)
         self.write_client = self.client.write_api()
