@@ -1,1 +1,0 @@
-python3  influxdb_edf_loader/influxdb_edf_loader.py -i /home/data/002/00000258/s002_2003_07_21/00000258_s002_t000.edf -c 'EEG FP1-REF' -v 1 -t MwZjnBm_uf0z7yYk9LVHChsYLDO_g92YaWvFxQewvUzklZRhQrxzhlrcSPYjz-kOjQ5dAc-MOUh7KsOEXWOKrg==

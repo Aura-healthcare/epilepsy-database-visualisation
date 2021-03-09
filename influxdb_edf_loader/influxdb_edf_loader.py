@@ -26,17 +26,11 @@ class InfluxdbLoader:
 
         self.headers = highlevel.read_edf_header(self.edf_file)
         self.channels = self.headers['channels']
-        print(self.channels)
 
-        # file_pattern = self.edf_file[re.search('PAT_*', edf_file).start():]
-        # self.patient_name = file_pattern[:re.search('/', file_pattern).start()]
-        # edf_file_name = file_pattern[re.search('/', file_pattern).start()+1:]
-        # self.segment = edf_file_name[-5:][0]
-        # self.record = edf_file_name[-9:][:2]
-
-        self.patient_name = '0002'
-        self.segment = 1
-        self.record = 1
+        relative_edf_path = self.edf_file[11:]
+        paths_components = re.split('/', relative_edf_path)
+        self.patient_name = paths_components[0]
+        self.record = paths_components[-1][:-4]
 
         self.startdate = pd.to_datetime(
             self.headers['startdate'])
@@ -85,7 +79,6 @@ class InfluxdbLoader:
         point_list = [Point("ecg_signal").
                       tag("patient", self.patient_name).
                       tag("base", self.base).
-                      tag("segment", self.segment).
                       tag("channel", channel_name).
                       tag("version", self.version).
                       tag("record", self.record).
@@ -112,8 +105,6 @@ class InfluxdbLoader:
                 channel_name=channel_name)
             self.write_client.write(self.bucket, self.org, point_list)
 
-        print('all loaded :) ')
-
 
 if __name__ == '__main__':
 
@@ -133,4 +124,8 @@ if __name__ == '__main__':
                             version=options.version,
                             token=options.token)
 
-    loader.load_data(options.channel)
+    for channel in loader.channels:
+        loader.load_data(channel)
+        print(f'Channel {channel} loaded')
+
+    print('All loaded!')
