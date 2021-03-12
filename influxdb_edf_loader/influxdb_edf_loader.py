@@ -35,10 +35,6 @@ class InfluxdbLoader:
 
         self.startdate = pd.to_datetime(
             self.headers['startdate'])
-        # For French hour, UTC+1 (no summer date) and
-        # months currently start at 0
-        self.startdate = self.startdate.replace(
-            month=self.startdate.month + 1) + pd.Timedelta(hours=1)
 
         # InfluxDB API
         self.base = 'ecg_lateppe'
