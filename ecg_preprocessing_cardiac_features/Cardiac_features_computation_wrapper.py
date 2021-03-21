@@ -192,7 +192,7 @@ if not options.output_filename.endswith(".json"):
     raise ValueError("Invalid output filepath ")
     exit()
 
-if not options.qrs_detector_used or (options.qrs_detector_used.lower() != "pan-tompkins" and options.qrs_detector_used.lower() != "swt" and options.qrs_detector_used.lower() != "xqrs"):
+if not options.qrs_detector_used or (options.qrs_detector_used.lower() != "gqrs" and options.qrs_detector_used.lower() != "xqrs" and options.qrs_detector_used.lower() != "hamilton" and options.qrs_detector_used.lower() != "engelsee" and options.qrs_detector_used.lower() != "swt"):
     raise ValueError("Invalid QRS Detector ")
     exit()
 
