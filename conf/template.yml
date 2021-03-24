@@ -1,0 +1,27 @@
+apiVersion: 1
+
+deleteDatasources:
+  - name: aura-mysql
+    orgId: 1
+  - name: aura-influxDB
+    orgId: 1
+
+datasources:
+  - name: aura-mysql
+    orgId: 1
+    type: mysql
+    access: proxy
+    url: ${MYSQL_HOST_IP}:3306
+    database: ${MYSQL_DATABASE}
+    user: ${MYSQL_USER}
+    password: ${MYSQL_ROOT_PASSWORD}
+    editable: true
+  - name: aura-influxDB
+    orgId: 1
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    database: ${INFLUXDB_DATABASE}
+    user: ${INFLUXDB_USERNAME}
+    password: ${INFLUXDB_PASSWORD}
+    editable: true
