@@ -3,7 +3,7 @@ version: '3.3'
 services:
 
   influxdb:
-    image: influxdb:latest
+    image: influxdb:1.8
     container_name: aura-influxdb
     ports:
       - '8086:8086'
@@ -30,8 +30,20 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
 
+  postgres:
+    image: postgres:11
+    container_name: aura-postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-storage:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:7.3.4
     container_name: aura-grafana
     ports:
       - '3000:3000'
@@ -42,6 +54,7 @@ services:
     depends_on:
       - influxdb
       - mysql
+      - postgres
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
@@ -49,3 +62,5 @@ services:
 volumes:
   influxdb-storage:
   grafana-storage:
+  postgres-storage:
+

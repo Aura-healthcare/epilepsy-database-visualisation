@@ -8,7 +8,7 @@ You need to install [docker](https://docs.docker.com/get-docker/) and [docker-co
 
 ## Setup
 
-To launch Grafana, mysql and influxdb on local, you **must set up all the relevant environment variables** (e.g in an **env.sh** file), then launch the following command to run the containers:
+To launch Grafana, mysql, postgres and influxdb on local, you **MUST SET UP ALL THE RELEVANT ENVIRONMENT VARIABLES** (e.g in an **env.sh** file), then launch the following command to run the containers:
 
 ```sh
     $ source env.sh  # Set env vars
