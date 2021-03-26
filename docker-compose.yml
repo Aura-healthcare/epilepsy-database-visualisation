@@ -3,7 +3,7 @@ version: '3.3'
 services:
 
   influxdb:
-    image: influxdb:1.8
+    image: influxdb:latest
     container_name: aura-influxdb
     ports:
       - '8086:8086'
